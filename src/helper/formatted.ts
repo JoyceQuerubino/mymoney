@@ -7,7 +7,7 @@ export function formatedValue(value: string | number){
     })
 }
 
-export function getTotalForType(items: ListCardType[], isFormated?: true) {
+export function getTotalForType(items: ListCardType[], isFormated?: boolean) {
     let totalUp = 0;
     let totalDown = 0;
 

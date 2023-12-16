@@ -13,7 +13,7 @@ import { formatedValue, getTotalForType } from '../../helper/formatted';
 export function Home(){
     const isFocused = useIsFocused();
     const { transactions, loading, fetchTransactions } = useFetchTransactions();
-    const { totalUp, totalDown, total } = getTotalForType(transactions);
+    const { totalUp, totalDown, total } = getTotalForType(transactions, true);
   
     useEffect(() => {
         fetchTransactions();

@@ -8,7 +8,7 @@ export const Container = styled.View`
 
 export const Content = styled.ScrollView`
     flex: 1;
-    padding: 0px 24px;
+    padding: 0 24px;
 `;
 
 export const ChartContainer = styled.View`

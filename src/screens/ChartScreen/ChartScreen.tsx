@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { Text } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { Header } from '../../components/Header';
 import { VictoryPie } from 'victory-native';
-import { Container, Content, ChartContainer } from './styles';
 import { ListCardType, useFetchTransactions } from '../../hooks/useFetchTransactions';
 import { Loading } from '../../components/Loading';
 import theme from '../../theme';
 import { data } from '.';
 import { categories } from '../../utils/categories';
 import { formatedValue, getTotalForType } from '../../helper/formatted';
+import { Container, Content, ChartContainer } from './styles';
 
 interface CatgoryData {
     key: string;
@@ -20,7 +21,7 @@ interface CatgoryData {
 }
 
 export function ChartScreen() {
-    // const isFocused = useIsFocused();
+    const isFocused = useIsFocused();
     const [month, setMonth] = useState("Janeiro");
     const { transactions, loading, fetchTransactions } = useFetchTransactions();
     const {totalDown } = getTotalForType(transactions);
@@ -42,9 +43,6 @@ export function ChartScreen() {
     
             if(categorySum > 0){
                 const total = formatedValue(categorySum);
-
-                console.log("CCC", totalDown);
-    
                 const percent = `${(categorySum / totalDown * 100).toFixed(0)}%`;
     
                 newTotal.push({
@@ -63,32 +61,39 @@ export function ChartScreen() {
     useEffect(() => {
         fetchTransactions();
         console.log("AAAA");
-    }, [])
+    }, [isFocused])
 
     useEffect(() => {
         // Este useEffect será executado sempre que o valor de transactions mudar
         if (transactions && transactions.length > 0) {
             // Quando as transações estiverem disponíveis, chama a função
             getTransactionByCategory(transactions, totalDown);
-            console.log("BBB");
         }
     }, [transactions]); // Observa a mudança no valor de transactions
 
     return (
         <Container>
             <Header isHome={false} screenName="Relatórios" />
-            <Content>
+            <Content showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: useBottomTabBarHeight() }}>
             {loading ? (<Loading background={theme.COLORS.BACKGROUND} loadColor={theme.COLORS.PRIMARY} />) : (  
                         <ChartContainer>
                             <VictoryPie
                                 data={totalByCategoy}
                                 x="percent"
                                 y="total" 
-                                colorScale={totalByCategoy.map((category) => category.color)}    
+                                colorScale={totalByCategoy.map((category) => category.color)}
+                                style={{
+                                    labels: {
+                                        fontSize: 14,
+                                        fontWeight: "bold",
+                                        fill: theme.COLORS.LIGHT
+                                    }
+                                }}
+                                labelRadius={68}    
                             />
                         </ChartContainer>
                     )}
-            {totalByCategoy?.map((transaction) => <Text key={transaction.id}>{transaction.name}</Text>)}
+            {totalByCategoy?.map((transaction) => <Text key={transaction.id}>{transaction.total}</Text>)}
             </Content>
         </Container>
     );
